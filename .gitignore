@@ -23,3 +23,15 @@ VoterInfo.json
 myinfo\.csv
 .vscode
 agenda.csv
+
+# JARVIS backend (Python/FastAPI)
+backend/.venv/
+backend/.env
+backend/data/
+backend/.pytest_cache/
+backend/.ruff_cache/
+backend/__pycache__/
+
+# JARVIS macOS app (Swift Package)
+apps/macos/JarvisMac/.build/
+apps/macos/JarvisMac/.swiftpm/

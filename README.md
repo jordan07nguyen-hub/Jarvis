@@ -1,5 +1,24 @@
 # Jarvis
 
+## JARVIS AI Assistant (new, macOS-first architecture)
+
+A new AI-powered assistant is being built in this repo, separate from the
+legacy CLI below: a FastAPI backend with a multi-provider AI abstraction
+(Claude, OpenAI, local Ollama, Gemini, OpenRouter) and a native SwiftUI
+macOS chat app.
+
+- [ARCHITECTURE.md](ARCHITECTURE.md) — design and component overview
+- [ROADMAP.md](ROADMAP.md) — phased plan and what's actually implemented today
+- [`backend/`](backend/) — FastAPI service (chat, memory, plugins) — `cd backend && poetry install && poetry run pytest`
+- [`apps/macos/JarvisMac/`](apps/macos/JarvisMac/) — SwiftUI macOS chat client (Swift Package, `swift run`)
+
+This is under active, incremental development — see the roadmap for what's
+done versus planned before assuming a feature exists.
+
+---
+
+## Legacy CLI (`jarviscli/`)
+
 [![Build Status](https://travis-ci.org/sukeesh/Jarvis.svg?branch=master)](https://travis-ci.org/sukeesh/Jarvis) [![Join the chat at https://gitter.im/Sukeesh_Jarvis/Lobby](https://badges.gitter.im/Sukeesh_Jarvis/Lobby.svg)](https://gitter.im/Sukeesh_Jarvis/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 A Personal Non-AI Assistant for Linux, MacOS and Windows
