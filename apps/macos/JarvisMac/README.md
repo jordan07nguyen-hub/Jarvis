@@ -29,6 +29,13 @@ on `http://localhost:8000`. To point at a different backend, set
 `JARVIS_BACKEND_WS_URL` in the environment (e.g. in the Xcode scheme's
 "Arguments > Environment Variables", or `JARVIS_BACKEND_WS_URL=ws://... swift run`).
 
+The backend requires a bearer token on every request (see
+`backend/README.md`'s Security section) — copy the token it prints on
+first run (or that you set via `JARVIS_API_TOKEN`) into this app's
+`JARVIS_API_TOKEN` environment variable the same way. Without it the app
+shows a connection error instead of silently failing. This is a stand-in
+for real Keychain-backed storage, tracked in `../../ROADMAP.md`.
+
 ## Structure
 
 - `Sources/JarvisMac/JarvisApp.swift` — app entry point.

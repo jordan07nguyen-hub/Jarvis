@@ -20,10 +20,7 @@ class GeminiProvider(AIProvider):
 
     def _url(self) -> str:
         model = self._settings.gemini_model
-        return (
-            f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
-            f"?key={self._settings.gemini_api_key}"
-        )
+        return f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
 
     async def chat(self, messages: list[ChatMessage]) -> str:
         if not self.is_configured():
@@ -34,7 +31,13 @@ class GeminiProvider(AIProvider):
             if m.role != "system"
         ]
         async with httpx.AsyncClient(timeout=60) as client:
-            resp = await client.post(self._url(), json={"contents": contents})
+            # Key goes in a header, not the URL — the URL ends up in exception
+            # messages/logs on failure, a header does not.
+            resp = await client.post(
+                self._url(),
+                headers={"x-goog-api-key": self._settings.gemini_api_key},
+                json={"contents": contents},
+            )
             resp.raise_for_status()
             data = resp.json()
             return data["candidates"][0]["content"]["parts"][0]["text"]

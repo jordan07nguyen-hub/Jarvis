@@ -17,8 +17,16 @@ final class JarvisClient: ObservableObject {
 
     func connect() {
         guard task == nil else { return }
+        guard let token = AppConfig.backendAPIToken, !token.isEmpty else {
+            lastError = "Set JARVIS_API_TOKEN to the token printed by the backend on first run."
+            return
+        }
+
+        var request = URLRequest(url: AppConfig.backendWebSocketURL)
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+
         let session = URLSession(configuration: .default)
-        let task = session.webSocketTask(with: AppConfig.backendWebSocketURL)
+        let task = session.webSocketTask(with: request)
         self.task = task
         task.resume()
         isConnected = true

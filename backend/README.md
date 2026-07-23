@@ -16,8 +16,11 @@ cp .env.example .env   # fill in at least one provider's API key
 poetry run python -m jarvis_backend.main
 ```
 
-The server starts on `http://localhost:8000`. Interactive API docs at
-`/docs`.
+The server starts on `http://localhost:8000` (loopback-only by default —
+see Security below). Interactive API docs at `/docs`.
+
+On first run it prints a generated API token to the console and saves it
+to `data/api_token.txt` — you need this to call the API.
 
 ## Configuration
 
@@ -27,9 +30,33 @@ chosen by priority (Claude → OpenAI → Ollama → Gemini → OpenRouter),
 picking the first one with credentials configured, or pin one explicitly
 with `JARVIS_AI_PROVIDER`.
 
+## Security
+
+This is a single-user local assistant, not a multi-tenant service, but it
+still needs basic guardrails since anything listening on a port is
+reachable by other local processes/devices unless you lock it down:
+
+- Binds to `127.0.0.1` by default (not `0.0.0.0`) — only reachable from
+  your own machine unless you deliberately widen `JARVIS_HOST`.
+- Every request to `/api/chat` and `/ws/chat` requires the bearer token
+  (`Authorization: Bearer <token>` header, or `?token=...` for the
+  WebSocket if your client can't set handshake headers). Get the token
+  from the console output / `data/api_token.txt` on first run, or pin one
+  yourself via `JARVIS_API_TOKEN`.
+- No browser origin is trusted: `/ws/chat` rejects any handshake carrying
+  an `Origin` header, and the REST API only allows cross-origin browser
+  calls from origins you explicitly list in `JARVIS_CORS_ALLOW_ORIGINS`
+  (empty/denied by default).
+- Provider errors are logged server-side, not forwarded to clients — a
+  failed request gets a generic error message, never the raw exception
+  (which, e.g. for a misbehaving provider, could otherwise leak
+  credentials embedded in a request URL).
+
 ## Endpoints
 
-- `GET /health` — liveness check.
+All routes below require the bearer token described above.
+
+- `GET /health` — liveness check (no token required).
 - `POST /api/chat` — single-turn chat: `{"session_id": "...", "message": "..."}`.
 - `WS /ws/chat` — streaming chat. Send `{"session_id": "...", "message": "..."}`
   as JSON; receive a stream of `{"type": "chunk", "text": "..."}` frames
