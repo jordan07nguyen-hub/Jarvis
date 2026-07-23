@@ -30,6 +30,11 @@ chosen by priority (Claude → OpenAI → Ollama → Gemini → OpenRouter),
 picking the first one with credentials configured, or pin one explicitly
 with `JARVIS_AI_PROVIDER`.
 
+When Claude is the active provider, JARVIS can search the web for news
+and current facts via Anthropic's server-side `web_search` tool — no
+separate search API key required. On by default; disable with
+`JARVIS_ANTHROPIC_WEB_SEARCH=false`.
+
 ## Security
 
 This is a single-user local assistant, not a multi-tenant service, but it

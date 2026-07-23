@@ -49,7 +49,10 @@ class Settings(BaseSettings):
     ai_provider: ProviderName | None = None
 
     anthropic_api_key: str | None = None
-    anthropic_model: str = "claude-sonnet-4-5-20250929"
+    anthropic_model: str = "claude-sonnet-5"
+    # Lets Claude search the web for news/current facts via Anthropic's
+    # server-side web_search tool — no separate search API key needed.
+    anthropic_web_search: bool = True
 
     openai_api_key: str | None = None
     openai_model: str = "gpt-4o"

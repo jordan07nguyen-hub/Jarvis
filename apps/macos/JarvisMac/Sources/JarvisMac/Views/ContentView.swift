@@ -2,6 +2,8 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject private var client: JarvisClient
+    @EnvironmentObject private var voiceOutput: VoiceOutput
+    @EnvironmentObject private var voiceInput: VoiceInputManager
     @State private var draft: String = ""
 
     var body: some View {
@@ -32,9 +34,24 @@ struct ContentView: View {
                     .padding(.horizontal)
             }
 
+            if let error = voiceInput.permissionError {
+                Text(error)
+                    .font(.caption)
+                    .foregroundColor(.orange)
+                    .padding(.horizontal)
+            }
+
             inputBar
         }
-        .onAppear { client.connect() }
+        .onAppear {
+            client.connect()
+            client.onAssistantReplyComplete = { [weak voiceOutput] text in
+                voiceOutput?.speak(text)
+            }
+            voiceInput.onCommand = { [weak client] command in
+                client?.send(command)
+            }
+        }
     }
 
     private var header: some View {
@@ -45,6 +62,32 @@ struct ContentView: View {
             Text("JARVIS")
                 .font(.headline)
             Spacer()
+
+            if voiceOutput.isSpeaking {
+                Image(systemName: "waveform")
+                    .foregroundColor(.accentColor)
+            }
+
+            Toggle(isOn: $voiceOutput.isEnabled) {
+                Image(systemName: voiceOutput.isEnabled ? "speaker.wave.2" : "speaker.slash")
+            }
+            .toggleStyle(.button)
+            .help("Speak replies out loud")
+
+            Toggle(isOn: Binding(
+                get: { voiceInput.isListening },
+                set: { listening in
+                    if listening {
+                        voiceInput.startContinuous()
+                    } else {
+                        voiceInput.stop()
+                    }
+                }
+            )) {
+                Image(systemName: voiceInput.isListening ? "mic.fill" : "mic.slash")
+            }
+            .toggleStyle(.button)
+            .help("Listen for \"Hey Jarvis\"")
         }
         .padding()
     }

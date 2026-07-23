@@ -12,6 +12,10 @@ final class JarvisClient: ObservableObject {
     @Published var isStreaming: Bool = false
     @Published var lastError: String?
 
+    /// Called with the completed reply text once streaming finishes —
+    /// hook up to `VoiceOutput.speak` to have JARVIS speak its replies.
+    var onAssistantReplyComplete: ((String) -> Void)?
+
     private var task: URLSessionWebSocketTask?
     private let sessionID = UUID().uuidString
 
@@ -91,6 +95,9 @@ final class JarvisClient: ObservableObject {
             messages[messages.count - 1] = last
         case "done":
             isStreaming = false
+            if let last = messages.last, last.role == .assistant {
+                onAssistantReplyComplete?(last.content)
+            }
         case "error":
             isStreaming = false
             lastError = json["message"] as? String ?? "Unknown error"

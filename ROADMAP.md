@@ -6,9 +6,9 @@ Status legend: ✅ done (working + tested)  🚧 in progress this session  ⬜ p
 |-------|-------|--------|
 | 1 | Architecture, folder structure, roadmap | ✅ |
 | 2 | Backend: FastAPI app, config, provider abstraction (Claude/OpenAI/Ollama/Gemini/OpenRouter), REST + WebSocket chat, tested with pytest | 🚧 MVP |
-| 3 | macOS app: SwiftUI chat UI skeleton talking to backend over WebSocket | 🚧 skeleton, unverified on real macOS |
+| 3 | macOS app: SwiftUI chat UI talking to backend over WebSocket | 🚧 unverified on real macOS |
 | 4 | iPhone companion app | ⬜ deferred — macOS prioritized per current scope |
-| 5 | Voice assistant: wake word, streaming STT/TTS, interrupt handling, offline mode | ⬜ |
+| 5 | Voice assistant: wake word, STT/TTS, interrupt handling, offline mode | 🚧 TTS replies + "Hey Jarvis" wake word + on-device STT in place; streaming/interrupt handling and true low-power always-on wake-word detection (vs. continuous on-device recognition) not done |
 | 6 | Memory: long-term store upgraded to vector embeddings (ChromaDB), project memory search | ⬜ (SQLite keyword store in place as the swappable placeholder) |
 | 7 | GitHub integration: clone/create repos, commit, PR, code review, scaffolding, as plugins | ⬜ (plugin framework in place to host these) |
 | 8 | Claude Code integration for "build software" workflows (plan → scaffold → generate → test → fix → commit loop) | ⬜ |
@@ -23,8 +23,11 @@ Status legend: ✅ done (working + tested)  🚧 in progress this session  ⬜ p
   `/health`, `/api/chat`, `/ws/chat`, provider registry with Claude as
   default, SQLite-backed short/long-term/project memory stubs, a plugin
   loader with one example plugin (`system_info`). Covered by `pytest`.
-- `apps/macos/JarvisMac/` — a SwiftUI Swift Package chat client skeleton.
-  Not build-verified here (no macOS/Xcode toolchain in this environment).
+- `apps/macos/JarvisMac/` — a SwiftUI Swift Package chat client with
+  text-to-speech replies and "Hey Jarvis" wake-word voice input. Not
+  build-verified here (no macOS/Xcode toolchain in this environment).
+- Backend: Claude requests include Anthropic's server-side web search
+  tool by default, so JARVIS can answer news/current-facts questions.
 - `ARCHITECTURE.md` — the design this is following.
 - The pre-existing `jarviscli/` legacy CLI project is untouched.
 
