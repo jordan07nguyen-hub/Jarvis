@@ -19,6 +19,9 @@ poetry run python -m jarvis_backend.main
 The server starts on `http://localhost:8000` (loopback-only by default —
 see Security below). Interactive API docs at `/docs`.
 
+Want it running automatically at login instead of a terminal window?
+See [`apps/macos/launchd/`](../apps/macos/launchd/) for a macOS LaunchAgent.
+
 On first run it prints a generated API token to the console and saves it
 to `data/api_token.txt` — you need this to call the API.
 

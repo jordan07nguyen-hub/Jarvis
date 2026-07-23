@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.jarvis.backend</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>__POETRY_PATH__</string>
+        <string>run</string>
+        <string>python</string>
+        <string>-m</string>
+        <string>jarvis_backend.main</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>__BACKEND_DIR__</string>
+
+    <!-- Starts the backend when you log in, and restarts it automatically
+         if it ever exits (crash or otherwise) while this agent is loaded. -->
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+
+    <!-- launchd runs with a minimal PATH; without this, `poetry` may not
+         resolve even though ProgramArguments points at it directly. -->
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/bin:/bin:/usr/local/bin:/opt/homebrew/bin:__HOME__/.local/bin</string>
+    </dict>
+
+    <!-- Nothing prints to a terminal window anymore — these files are
+         where stdout/stderr (including the first-run API token) go. -->
+    <key>StandardOutPath</key>
+    <string>__HOME__/Library/Logs/jarvis-backend.log</string>
+    <key>StandardErrorPath</key>
+    <string>__HOME__/Library/Logs/jarvis-backend-error.log</string>
+</dict>
+</plist>
